@@ -1,5 +1,5 @@
 use super::*;
-use soroban_sdk::{Address, Env, testutils::Address as _, vec};
+use soroban_sdk::{testutils::Address as _, vec, Address, Env};
 
 #[test]
 fn test_create_and_get_escrow() {
@@ -90,6 +90,40 @@ fn test_release_milestone() {
 }
 
 #[test]
+#[should_panic(expected = "Error(Contract, #9)")]
+fn test_dispute_blocks_release() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register(VaultixEscrow, ());
+    let client = VaultixEscrowClient::new(&env, &contract_id);
+
+    let depositor = Address::generate(&env);
+    let recipient = Address::generate(&env);
+    let escrow_id = 9u64;
+
+    let milestones = vec![
+        &env,
+        Milestone {
+            amount: 500,
+            status: MilestoneStatus::Pending,
+            description: symbol_short!("Task"),
+        },
+    ];
+
+    client.create_escrow(&escrow_id, &depositor, &recipient, &milestones);
+
+    // Either party can raise dispute; use depositor as caller.
+    client.raise_dispute(&escrow_id, &depositor);
+
+    let escrow = client.get_escrow(&escrow_id);
+    assert_eq!(escrow.status, EscrowStatus::Disputed);
+
+    // This should panic with Error #9 (EscrowNotActive)
+    client.release_milestone(&escrow_id, &0);
+}
+
+#[test]
 fn test_complete_escrow() {
     let env = Env::default();
     env.mock_all_auths();
@@ -157,6 +191,101 @@ fn test_cancel_escrow() {
 
     let escrow = client.get_escrow(&escrow_id);
     assert_eq!(escrow.status, EscrowStatus::Cancelled);
+}
+
+#[test]
+fn test_admin_resolves_dispute_to_recipient() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register(VaultixEscrow, ());
+    let client = VaultixEscrowClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    let depositor = Address::generate(&env);
+    let recipient = Address::generate(&env);
+    let escrow_id = 10u64;
+
+    client.init(&admin);
+
+    let milestones = vec![
+        &env,
+        Milestone {
+            amount: 4000,
+            status: MilestoneStatus::Pending,
+            description: symbol_short!("Phase1"),
+        },
+        Milestone {
+            amount: 6000,
+            status: MilestoneStatus::Pending,
+            description: symbol_short!("Phase2"),
+        },
+    ];
+
+    client.create_escrow(&escrow_id, &depositor, &recipient, &milestones);
+
+    // Raise dispute mid-project
+    client.raise_dispute(&escrow_id, &recipient);
+
+    // Admin resolves in favor of recipient (force payout)
+    client.resolve_dispute(&escrow_id, &recipient);
+
+    let escrow = client.get_escrow(&escrow_id);
+    assert_eq!(escrow.status, EscrowStatus::Resolved);
+    assert_eq!(escrow.resolution, Resolution::Recipient);
+    assert_eq!(escrow.total_released, escrow.total_amount);
+    assert!(escrow
+        .milestones
+        .iter()
+        .all(|m| m.status == MilestoneStatus::Released));
+}
+
+#[test]
+fn test_admin_resolves_dispute_to_depositor() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register(VaultixEscrow, ());
+    let client = VaultixEscrowClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    let depositor = Address::generate(&env);
+    let recipient = Address::generate(&env);
+    let escrow_id = 11u64;
+
+    client.init(&admin);
+
+    let milestones = vec![
+        &env,
+        Milestone {
+            amount: 2000,
+            status: MilestoneStatus::Pending,
+            description: symbol_short!("Alpha"),
+        },
+        Milestone {
+            amount: 3000,
+            status: MilestoneStatus::Pending,
+            description: symbol_short!("Beta"),
+        },
+    ];
+
+    client.create_escrow(&escrow_id, &depositor, &recipient, &milestones);
+
+    // Raise dispute as depositor
+    client.raise_dispute(&escrow_id, &depositor);
+
+    // Admin rules in favor of depositor (refund remaining funds)
+    client.resolve_dispute(&escrow_id, &depositor);
+
+    let escrow = client.get_escrow(&escrow_id);
+    assert_eq!(escrow.status, EscrowStatus::Resolved);
+    assert_eq!(escrow.resolution, Resolution::Depositor);
+    // No additional releases occurred
+    assert_eq!(escrow.total_released, 0);
+    assert!(escrow
+        .milestones
+        .iter()
+        .all(|m| m.status == MilestoneStatus::Disputed));
 }
 
 #[test]

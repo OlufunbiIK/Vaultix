@@ -16,7 +16,7 @@
               "function_name": "create_escrow",
               "args": [
                 {
-                  "u64": "1"
+                  "u64": "9"
                 },
                 {
                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
@@ -33,7 +33,7 @@
                             "symbol": "amount"
                           },
                           "val": {
-                            "i128": "3000"
+                            "i128": "500"
                           }
                         },
                         {
@@ -41,71 +41,7 @@
                             "symbol": "description"
                           },
                           "val": {
-                            "symbol": "Design"
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "status"
-                          },
-                          "val": {
-                            "vec": [
-                              {
-                                "symbol": "Pending"
-                              }
-                            ]
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "map": [
-                        {
-                          "key": {
-                            "symbol": "amount"
-                          },
-                          "val": {
-                            "i128": "3000"
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "description"
-                          },
-                          "val": {
-                            "symbol": "Dev"
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "status"
-                          },
-                          "val": {
-                            "vec": [
-                              {
-                                "symbol": "Pending"
-                              }
-                            ]
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "map": [
-                        {
-                          "key": {
-                            "symbol": "amount"
-                          },
-                          "val": {
-                            "i128": "4000"
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "description"
-                          },
-                          "val": {
-                            "symbol": "Deploy"
+                            "symbol": "Task"
                           }
                         },
                         {
@@ -131,6 +67,29 @@
         }
       ]
     ],
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+              "function_name": "raise_dispute",
+              "args": [
+                {
+                  "u64": "9"
+                },
+                {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                }
+              ]
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
+    [],
     []
   ],
   "ledger": {
@@ -156,7 +115,7 @@
                     "symbol": "escrow"
                   },
                   {
-                    "u64": "1"
+                    "u64": "9"
                   }
                 ]
               },
@@ -184,7 +143,7 @@
                                 "symbol": "amount"
                               },
                               "val": {
-                                "i128": "3000"
+                                "i128": "500"
                               }
                             },
                             {
@@ -192,7 +151,7 @@
                                 "symbol": "description"
                               },
                               "val": {
-                                "symbol": "Design"
+                                "symbol": "Task"
                               }
                             },
                             {
@@ -202,71 +161,7 @@
                               "val": {
                                 "vec": [
                                   {
-                                    "symbol": "Pending"
-                                  }
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "map": [
-                            {
-                              "key": {
-                                "symbol": "amount"
-                              },
-                              "val": {
-                                "i128": "3000"
-                              }
-                            },
-                            {
-                              "key": {
-                                "symbol": "description"
-                              },
-                              "val": {
-                                "symbol": "Dev"
-                              }
-                            },
-                            {
-                              "key": {
-                                "symbol": "status"
-                              },
-                              "val": {
-                                "vec": [
-                                  {
-                                    "symbol": "Pending"
-                                  }
-                                ]
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "map": [
-                            {
-                              "key": {
-                                "symbol": "amount"
-                              },
-                              "val": {
-                                "i128": "4000"
-                              }
-                            },
-                            {
-                              "key": {
-                                "symbol": "description"
-                              },
-                              "val": {
-                                "symbol": "Deploy"
-                              }
-                            },
-                            {
-                              "key": {
-                                "symbol": "status"
-                              },
-                              "val": {
-                                "vec": [
-                                  {
-                                    "symbol": "Pending"
+                                    "symbol": "Disputed"
                                   }
                                 ]
                               }
@@ -303,7 +198,7 @@
                     "val": {
                       "vec": [
                         {
-                          "symbol": "Active"
+                          "symbol": "Disputed"
                         }
                       ]
                     }
@@ -313,7 +208,7 @@
                       "symbol": "total_amount"
                     },
                     "val": {
-                      "i128": "10000"
+                      "i128": "500"
                     }
                   },
                   {
@@ -365,6 +260,26 @@
               "key": {
                 "ledger_key_nonce": {
                   "nonce": "801925984706572462"
+                }
+              },
+              "durability": "temporary",
+              "val": "void"
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": 6311999
+      },
+      {
+        "entry": {
+          "last_modified_ledger_seq": 0,
+          "data": {
+            "contract_data": {
+              "ext": "v0",
+              "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+              "key": {
+                "ledger_key_nonce": {
+                  "nonce": "5541220902715666415"
                 }
               },
               "durability": "temporary",

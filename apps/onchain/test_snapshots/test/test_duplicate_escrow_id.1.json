@@ -158,6 +158,18 @@
                   },
                   {
                     "key": {
+                      "symbol": "resolution"
+                    },
+                    "val": {
+                      "vec": [
+                        {
+                          "symbol": "None"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "key": {
                       "symbol": "status"
                     },
                     "val": {
