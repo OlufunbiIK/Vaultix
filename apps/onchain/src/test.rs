@@ -1,5 +1,5 @@
 use super::*;
-use soroban_sdk::{token, Address, Env, testutils::Address as _, vec};
+use soroban_sdk::{Address, Env, testutils::Address as _, token, vec};
 
 /// Helper function to create and initialize a test token
 /// Returns admin client for minting and the token address
@@ -86,7 +86,7 @@ fn test_deposit_funds() {
     let (token_admin, token_address) = create_test_token(&env, &admin);
     // Create regular client for other operations
     let token_client = token::Client::new(&env, &token_address);
-    
+
     let initial_balance: i128 = 20_000;
     token_admin.mint(&depositor, &initial_balance);
 
@@ -145,7 +145,7 @@ fn test_release_milestone_with_tokens() {
     // Setup token
     let (token_admin, token_address) = create_test_token(&env, &admin);
     let token_client = token::Client::new(&env, &token_address);
-    
+
     token_admin.mint(&depositor, &10_000);
 
     let milestones = vec![
@@ -219,7 +219,7 @@ fn test_complete_escrow_with_all_releases() {
     // Setup token
     let (token_admin, token_address) = create_test_token(&env, &admin);
     let token_client = token::Client::new(&env, &token_address);
-    
+
     token_admin.mint(&depositor, &10_000);
 
     // Create token contract and mint tokens
@@ -284,7 +284,7 @@ fn test_cancel_escrow_with_refund() {
     // Setup token
     let (token_admin, token_address) = create_test_token(&env, &admin);
     let token_client = token::Client::new(&env, &token_address);
-    
+
     token_admin.mint(&depositor, &10_000);
 
     // Create token contract and mint tokens
@@ -436,7 +436,7 @@ fn test_double_release() {
 
     let (token_admin, token_address) = create_test_token(&env, &admin);
     let token_client = token::Client::new(&env, &token_address);
-    
+
     token_admin.mint(&depositor, &1000);
 
     // Create token contract and mint tokens
@@ -732,7 +732,7 @@ fn test_double_deposit_rejected() {
 
     let (token_admin, token_address) = create_test_token(&env, &admin);
     let token_client = token::Client::new(&env, &token_address);
-    
+
     token_admin.mint(&depositor, &20_000);
 
     let milestones = vec![

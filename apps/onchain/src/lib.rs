@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
-    token, Address, Env, Symbol, Vec, contract, contracterror, contractimpl, contracttype,
-    symbol_short,
+    Address, Env, Symbol, Vec, contract, contracterror, contractimpl, contracttype, symbol_short,
+    token,
 };
 
 // Milestone status tracking
@@ -64,8 +64,8 @@ pub enum Error {
     ZeroAmount = 11,
     InvalidDeadline = 12,
     SelfDealing = 13,
-    EscrowAlreadyFunded = 14,  // NEW: Prevent double funding
-    TokenTransferFailed = 15,  // NEW: Token transfer error
+    EscrowAlreadyFunded = 14, // NEW: Prevent double funding
+    TokenTransferFailed = 15, // NEW: Token transfer error
 }
 
 // Platform fee configuration (in basis points: 1 bps = 0.01%)
@@ -222,13 +222,11 @@ impl VaultixEscrow {
 
         // Save to persistent storage
         env.storage().persistent().set(&storage_key, &escrow);
-        
+
         // Extend TTL for long-term storage
-        env.storage().persistent().extend_ttl(
-            &storage_key,
-            100,
-            2_000_000,
-        );
+        env.storage()
+            .persistent()
+            .extend_ttl(&storage_key, 100, 2_000_000);
 
         Ok(())
     }
@@ -269,7 +267,7 @@ impl VaultixEscrow {
         // NOTE: Depositor must have approved this contract to spend their tokens
         token_client.transfer_from(
             &env.current_contract_address(), // spender (this contract)
-            &escrow.depositor,                // from (depositor's address)
+            &escrow.depositor,               // from (depositor's address)
             &env.current_contract_address(), // to (contract's address - holds in escrow)
             &escrow.total_amount,            // amount to transfer
         );
@@ -279,13 +277,11 @@ impl VaultixEscrow {
 
         // Save updated escrow
         env.storage().persistent().set(&storage_key, &escrow);
-        
+
         // Extend TTL
-        env.storage().persistent().extend_ttl(
-            &storage_key,
-            100,
-            2_000_000,
-        );
+        env.storage()
+            .persistent()
+            .extend_ttl(&storage_key, 100, 2_000_000);
 
         // Transfer funds from depositor to contract
         let token_client = token::Client::new(&env, &token);
@@ -373,8 +369,8 @@ impl VaultixEscrow {
         // Transfer milestone amount from contract to recipient
         token_client.transfer(
             &env.current_contract_address(), // from (contract address)
-            &escrow.recipient,                // to (recipient address)
-            &milestone.amount,                // amount to release
+            &escrow.recipient,               // to (recipient address)
+            &milestone.amount,               // amount to release
         );
         // Get treasury and fee configuration
         let (treasury, fee_bps) = Self::get_config(env.clone())?;
@@ -417,13 +413,11 @@ impl VaultixEscrow {
 
         // Save updated escrow
         env.storage().persistent().set(&storage_key, &escrow);
-        
+
         // Extend TTL
-        env.storage().persistent().extend_ttl(
-            &storage_key,
-            100,
-            2_000_000,
-        );
+        env.storage()
+            .persistent()
+            .extend_ttl(&storage_key, 100, 2_000_000);
 
         // Emit event for milestone release
         #[allow(deprecated)]
@@ -546,11 +540,11 @@ impl VaultixEscrow {
         // If escrow was funded (Active status), refund the depositor
         if escrow.status == EscrowStatus::Active {
             let token_client = token::Client::new(&env, &escrow.token_address);
-            
+
             // Transfer all funds back to depositor
             token_client.transfer(
                 &env.current_contract_address(), // from (contract)
-                &escrow.depositor,                // to (depositor)
+                &escrow.depositor,               // to (depositor)
                 &escrow.total_amount,            // full amount
             );
         }
@@ -558,13 +552,11 @@ impl VaultixEscrow {
         // Update status
         escrow.status = EscrowStatus::Cancelled;
         env.storage().persistent().set(&storage_key, &escrow);
-        
+
         // Extend TTL
-        env.storage().persistent().extend_ttl(
-            &storage_key,
-            100,
-            2_000_000,
-        );
+        env.storage()
+            .persistent()
+            .extend_ttl(&storage_key, 100, 2_000_000);
 
         Ok(())
     }
@@ -598,13 +590,11 @@ impl VaultixEscrow {
         // Update status
         escrow.status = EscrowStatus::Completed;
         env.storage().persistent().set(&storage_key, &escrow);
-        
+
         // Extend TTL
-        env.storage().persistent().extend_ttl(
-            &storage_key,
-            100,
-            2_000_000,
-        );
+        env.storage()
+            .persistent()
+            .extend_ttl(&storage_key, 100, 2_000_000);
 
         Ok(())
     }
