@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -61,16 +62,16 @@ export default function CreateEscrowWizard() {
       if (!connected) {
         throw new Error('Freighter wallet not connected. Please install and connect Freighter.');
       }
-      
+
       const { address } = await getAddress();
       if (!address) {
         throw new Error('Could not retrieve address from Freighter.');
       }
-      
+
       // 2. Build Transaction (Mock/Placeholder logic)
       // In a real app, you would fetch the sequence number, build the invokeHostFunction op, etc.
       // For this demo, we'll demonstrate the intent.
-      
+
       // Example:
       // const server = new Horizon.Server('https://horizon-testnet.stellar.org');
       // const account = await server.loadAccount(publicKey);
@@ -81,17 +82,17 @@ export default function CreateEscrowWizard() {
       // .addOperation(...) // Invoke contract logic here
       // .setTimeout(30)
       // .build();
-      
+
       // Since we don't have the contract bindings generated, we'll simulate the delay and signing request
       // to demonstrate the UX flow.
-      
+
       // await signTransaction(tx.toXDR(), { network: 'TESTNET' });
-      
+
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate building
-      
+
       // Simulate signing success
       // const signedXdr = await signTransaction(mockXdr, ...);
-      
+
       // Simulate submission
       // await server.submitTransaction(transaction);
 
@@ -120,9 +121,9 @@ export default function CreateEscrowWizard() {
           <p className="font-mono text-sm text-gray-700">{txHash}</p>
         </div>
         <div className="pt-4">
-          <a href="/escrow" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link href="/dashboard" className="text-blue-600 hover:text-blue-700 font-medium">
             Return to Dashboard
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -135,8 +136,8 @@ export default function CreateEscrowWizard() {
         <nav aria-label="Progress" className="mb-12 lg:mb-20">
           <ol role="list" className="flex items-center w-full">
             {STEPS.map((step, stepIdx) => (
-              <li 
-                key={step.id} 
+              <li
+                key={step.id}
                 className="relative flex-1"
               >
                 {/* Connector Line */}
@@ -162,9 +163,8 @@ export default function CreateEscrowWizard() {
                       </div>
                     )}
                   </span>
-                  <span className={`absolute -bottom-8 w-max text-center text-sm font-medium transition-colors duration-200 ${
-                    stepIdx <= currentStep ? 'text-blue-600' : 'text-gray-500'
-                  }`}>
+                  <span className={`absolute -bottom-8 w-max text-center text-sm font-medium transition-colors duration-200 ${stepIdx <= currentStep ? 'text-blue-600' : 'text-gray-500'
+                    }`}>
                     {step.title}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ export default function CreateEscrowWizard() {
         {/* Main Content */}
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            
+
             {/* Steps */}
             <div className="mt-4">
               {currentStep === 0 && <BasicInfoStep />}
@@ -199,9 +199,8 @@ export default function CreateEscrowWizard() {
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 0 || isSubmitting}
-                className={`flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                  currentStep === 0 ? 'invisible' : ''
-                }`}
+                className={`flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${currentStep === 0 ? 'invisible' : ''
+                  }`}
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Back

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Check } from 'lucide-react';
-import { useWallet} from '@/app/contexts/WalletContext';
+import { useWallet } from '@/app/contexts/WalletContext';
 
 interface ConnectWalletModalProps {
   isOpen: boolean;
@@ -35,17 +35,17 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({ isOpen, 
   const [selectedWallet, setSelectedWallet] = useState<any | null>(null);
 
   useEffect(() => {
+    const loadAvailableWallets = async () => {
+      const wallets = await getAvailableWallets();
+      setAvailableWallets(wallets);
+    };
+
     if (isOpen) {
       loadAvailableWallets();
     }
-  }, [isOpen]);
+  }, [isOpen, getAvailableWallets]);
 
-  const loadAvailableWallets = async () => {
-    const wallets = await getAvailableWallets();
-    setAvailableWallets(wallets);
-  };
-
-  const handleConnect = async (walletType:any) => {
+  const handleConnect = async (walletType: any) => {
     try {
       setSelectedWallet(walletType);
       await connect(walletType);
@@ -97,11 +97,10 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({ isOpen, 
                 key={walletType}
                 onClick={() => isAvailable && handleConnect(walletType)}
                 disabled={!isAvailable || isConnecting}
-                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 ${
-                  isAvailable
+                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 ${isAvailable
                     ? 'bg-gray-800 hover:bg-gray-700 hover:scale-[1.02] active:scale-[0.98]'
                     : 'bg-gray-900/50 opacity-60 cursor-not-allowed'
-                } border border-gray-700`}
+                  } border border-gray-700`}
               >
                 <div className="flex items-center space-x-4">
                   <div className="text-2xl">{info.icon}</div>

@@ -25,6 +25,7 @@ export default function KeyFeatures() {
   const featuresRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    const currentRef = featuresRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -34,13 +35,13 @@ export default function KeyFeatures() {
       { threshold: 0.1 }
     );
 
-    if (featuresRef.current) {
-      observer.observe(featuresRef.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (featuresRef.current) {
-        observer.unobserve(featuresRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);
@@ -169,9 +170,8 @@ export default function KeyFeatures() {
       {/* Content container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div
-          className={`text-center mb-16 transition-all duration-1000 transform ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          }`}
+          className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
         >
           <div className="inline-block mb-3">
             <div className="flex items-center justify-center space-x-2 bg-gray-800 bg-opacity-50 backdrop-blur-sm px-4 py-1 rounded-full">
@@ -188,7 +188,7 @@ export default function KeyFeatures() {
             </span>
           </h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
-            Vaultix leverages StarkNet's cutting-edge technology to deliver a
+            Vaultix leverages StarkNet&apos;s cutting-edge technology to deliver a
             suite of powerful features that revolutionize freelance payments.
           </p>
         </div>
@@ -200,23 +200,20 @@ export default function KeyFeatures() {
             return (
               <div
                 key={index}
-                className={`transition-all duration-700 transform ${
-                  isVisible
+                className={`transition-all duration-700 transform ${isVisible
                     ? "translate-y-0 opacity-100"
                     : "translate-y-10 opacity-0"
-                }`}
+                  }`}
                 style={{ transitionDelay: getAnimationDelay(index) }}
                 onMouseEnter={() => setHoveredFeature(index)}
                 onMouseLeave={() => setHoveredFeature(null)}
               >
                 <div
-                  className={`relative h-full ${
-                    feature.bgAccent
-                  } rounded-2xl p-1 transition-all duration-300 ${
-                    hoveredFeature === index
+                  className={`relative h-full ${feature.bgAccent
+                    } rounded-2xl p-1 transition-all duration-300 ${hoveredFeature === index
                       ? "scale-105 shadow-lg shadow-purple-900/20"
                       : "scale-100"
-                  }`}
+                    }`}
                 >
                   {/* Background Layers */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-transparent via-gray-800 to-gray-800 z-0"></div>
@@ -225,11 +222,9 @@ export default function KeyFeatures() {
                   {/* Card Content */}
                   <div className="relative bg-gray-800 rounded-2xl p-6 md:p-8 h-full z-10 transition-all duration-300 flex flex-col">
                     <div
-                      className={`w-14 h-14 rounded-xl bg-gradient-to-br ${
-                        feature.gradient
-                      } p-3 mb-6 transition-all duration-300 ${
-                        hoveredFeature === index ? "scale-110" : ""
-                      }`}
+                      className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.gradient
+                        } p-3 mb-6 transition-all duration-300 ${hoveredFeature === index ? "scale-110" : ""
+                        }`}
                     >
                       <Icon size={32} className="text-white" />
                     </div>
@@ -239,11 +234,10 @@ export default function KeyFeatures() {
 
                     {/* Expanded Points */}
                     <div
-                      className={`space-y-3 mb-6 transition-all duration-300 ${
-                        hoveredFeature === index
+                      className={`space-y-3 mb-6 transition-all duration-300 ${hoveredFeature === index
                           ? "max-h-40 opacity-100"
                           : "max-h-0 opacity-0 overflow-hidden"
-                      }`}
+                        }`}
                     >
                       {feature.detailedPoints.map((point, i) => (
                         <div key={i} className="flex items-start">
@@ -284,9 +278,8 @@ export default function KeyFeatures() {
 
       {/* CTA Button */}
       <div
-        className={`text-center mt-16 transition-all duration-1000 delay-700 transform ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-        }`}
+        className={`text-center mt-16 transition-all duration-1000 delay-700 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+          }`}
       >
         <button className="px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium transform transition-all duration-200 hover:scale-105">
           Explore All Features
