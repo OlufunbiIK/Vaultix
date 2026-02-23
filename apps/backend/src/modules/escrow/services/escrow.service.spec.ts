@@ -13,6 +13,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EscrowStellarIntegrationService } from './escrow-stellar-integration.service';
+import { WebhookService } from '../../../services/webhook/webhook.service';
 
 describe('EscrowService', () => {
   let service: EscrowService;
@@ -82,6 +83,12 @@ describe('EscrowService', () => {
           provide: EscrowStellarIntegrationService,
           useValue: {
             completeOnChainEscrow: jest.fn().mockResolvedValue('mock-tx-hash'),
+          },
+        },
+        {
+          provide: WebhookService,
+          useValue: {
+            dispatchEvent: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],
