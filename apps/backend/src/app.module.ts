@@ -9,14 +9,12 @@ import { EscrowModule } from './modules/escrow/escrow.module';
 import { StellarModule } from './modules/stellar/stellar.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
-import { StellarEventModule } from './modules/stellar/stellar-event.module';
 import { User } from './modules/user/entities/user.entity';
 import { RefreshToken } from './modules/user/entities/refresh-token.entity';
 import { Escrow } from './modules/escrow/entities/escrow.entity';
 import { Party } from './modules/escrow/entities/party.entity';
 import { Condition } from './modules/escrow/entities/condition.entity';
 import { EscrowEvent } from './modules/escrow/entities/escrow-event.entity';
-import { StellarEvent } from './modules/stellar/entities/stellar-event.entity';
 
 @Module({
   imports: [
@@ -31,15 +29,7 @@ import { StellarEvent } from './modules/stellar/entities/stellar-event.entity';
           'DATABASE_PATH',
           './data/vaultix.db',
         ),
-        entities: [
-          User,
-          RefreshToken,
-          Escrow,
-          Party,
-          Condition,
-          EscrowEvent,
-          StellarEvent,
-        ],
+        entities: [User, RefreshToken, Escrow, Party, Condition, EscrowEvent],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
@@ -50,7 +40,6 @@ import { StellarEvent } from './modules/stellar/entities/stellar-event.entity';
     StellarModule,
     AdminModule,
     WebhookModule,
-    StellarEventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
