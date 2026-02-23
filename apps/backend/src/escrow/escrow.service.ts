@@ -1,8 +1,17 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Escrow } from "./entities/escrow.entity";
-import { EscrowDetailResponseDto } from "./dto/escrow-detail.dto";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Escrow } from './entities/escrow.entity';
+import { EscrowDetailResponseDto } from './dto/escrow-detail.dto';
+
+interface CurrentUser {
+  id: string;
+  roles?: string[];
+}
 
 @Injectable()
 export class EscrowsService {
@@ -13,7 +22,7 @@ export class EscrowsService {
 
   async getEscrowDetail(
     escrowId: string,
-    currentUser: any,
+    currentUser: CurrentUser,
   ): Promise<EscrowDetailResponseDto> {
     const escrow = await this.escrowRepo.findOne({
       where: { id: escrowId },
@@ -24,25 +33,21 @@ export class EscrowsService {
       throw new NotFoundException('Escrow not found');
     }
 
-    // 🔐 Authorization
     const isParticipant =
       escrow.depositorId === currentUser.id ||
       escrow.recipientId === currentUser.id;
 
-    const isAdmin = currentUser.roles?.includes('admin');
+    const isAdmin = currentUser.roles?.includes('admin') ?? false;
 
     if (!isParticipant && !isAdmin) {
       throw new ForbiddenException('Access denied');
     }
 
-    // 📊 Derived fields
     const totalAmount = Number(escrow.totalAmount);
     const totalReleased = Number(escrow.totalReleased);
 
     const progressPercentage =
-      totalAmount === 0
-        ? 0
-        : Math.round((totalReleased / totalAmount) * 100);
+      totalAmount === 0 ? 0 : Math.round((totalReleased / totalAmount) * 100);
 
     const isOverdue =
       escrow.status !== 'COMPLETED' &&
@@ -57,13 +62,8 @@ export class EscrowsService {
       totalReleased: escrow.totalReleased,
       deadline: escrow.deadline,
 
-      depositor: {
-        id: escrow.depositorId,
-      },
-
-      recipient: {
-        id: escrow.recipientId,
-      },
+      depositor: { id: escrow.depositorId },
+      recipient: { id: escrow.recipientId },
 
       milestones: escrow.milestones.map((m) => ({
         index: m.index,
@@ -79,7 +79,7 @@ export class EscrowsService {
       createdAt: escrow.createdAt,
       updatedAt: escrow.updatedAt,
 
-      lastActionType: escrow.status, // simplified
+      lastActionType: escrow.status,
     };
   }
 }

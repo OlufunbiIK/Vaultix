@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { NotificationChannel, NotificationEventType } from "../enums/notification-event.enum";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  NotificationChannel,
+  NotificationEventType,
+} from '../enums/notification-event.enum';
 
 @Entity()
 export class NotificationPreference {

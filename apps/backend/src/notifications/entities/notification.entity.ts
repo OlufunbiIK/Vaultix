@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { NotificationEventType, NotificationStatus } from "../enums/notification-event.enum";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  NotificationEventType,
+  NotificationStatus,
+} from '../enums/notification-event.enum';
 
 @Entity()
 export class Notification {
@@ -13,9 +22,13 @@ export class Notification {
   eventType: NotificationEventType;
 
   @Column({ type: 'jsonb' })
-  payload: any;
+  payload: Record<string, unknown>;
 
-  @Column({ type: 'enum', enum: NotificationStatus, default: NotificationStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: NotificationStatus,
+    default: NotificationStatus.PENDING,
+  })
   status: NotificationStatus;
 
   @Column({ default: 0 })

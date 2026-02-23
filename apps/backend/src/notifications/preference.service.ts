@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { NotificationPreference } from "./entities/notification-preference.entity";
-import { Repository } from "typeorm";
-import { UpdatePreferencesDto } from "./entities/update-preferences.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NotificationPreference } from './entities/notification-preference.entity';
+import { Repository } from 'typeorm';
+import { UpdatePreferencesDto } from './entities/update-preferences.dto';
 
 @Injectable()
 export class PreferenceService {
@@ -15,35 +15,33 @@ export class PreferenceService {
     return this.repo.find({ where: { userId } });
   }
 
- async updatePreferences(
-  userId: string,
-  updates: UpdatePreferencesDto[],
-): Promise<NotificationPreference[]> {
+  async updatePreferences(
+    userId: string,
+    updates: UpdatePreferencesDto[],
+  ): Promise<NotificationPreference[]> {
+    const results: NotificationPreference[] = [];
 
-  const results: NotificationPreference[] = [];
-
-  for (const update of updates) {
-    let pref = await this.repo.findOne({
-      where: { userId, channel: update.channel },
-    });
-
-    if (!pref) {
-      pref = this.repo.create({
-        userId,
-        channel: update.channel,
-        enabled: update.enabled,
-        eventTypes: update.eventTypes,
+    for (const update of updates) {
+      let pref = await this.repo.findOne({
+        where: { userId, channel: update.channel },
       });
-    } else {
-      pref.enabled = update.enabled;
-      pref.eventTypes = update.eventTypes;
+
+      if (!pref) {
+        pref = this.repo.create({
+          userId,
+          channel: update.channel,
+          enabled: update.enabled,
+          eventTypes: update.eventTypes,
+        });
+      } else {
+        pref.enabled = update.enabled;
+        pref.eventTypes = update.eventTypes;
+      }
+
+      const saved = await this.repo.save(pref);
+      results.push(saved);
     }
 
-    const saved = await this.repo.save(pref);
-    results.push(saved);
+    return results;
   }
-
-  return results;
-}
-
 }

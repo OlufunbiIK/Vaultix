@@ -4,6 +4,11 @@ import { Repository } from 'typeorm';
 import { ApiKey } from './entities/api-key.entity';
 import { generateApiKey, hashKey } from './utils/api-key.util';
 
+interface CreateApiKeyDto {
+  name: string;
+  rateLimitPerMinute?: number;
+}
+
 @Injectable()
 export class ApiKeysService {
   constructor(
@@ -11,7 +16,7 @@ export class ApiKeysService {
     private repo: Repository<ApiKey>,
   ) {}
 
-  async create(ownerUserId: string, dto: any) {
+  async create(ownerUserId: string, dto: CreateApiKeyDto) {
     const rawKey = generateApiKey();
 
     const apiKey = this.repo.create({
@@ -19,8 +24,7 @@ export class ApiKeysService {
       ownerUserId,
       keyHash: hashKey(rawKey),
       rateLimitPerMinute:
-        dto.rateLimitPerMinute ??
-        Number(process.env.DEFAULT_RATE_LIMIT ?? 60),
+        dto.rateLimitPerMinute ?? Number(process.env.DEFAULT_RATE_LIMIT ?? 60),
     });
 
     const saved = await this.repo.save(apiKey);
@@ -28,7 +32,7 @@ export class ApiKeysService {
     return {
       id: saved.id,
       name: saved.name,
-      key: rawKey, // return ONLY once
+      key: rawKey,
       rateLimitPerMinute: saved.rateLimitPerMinute,
       createdAt: saved.createdAt,
     };

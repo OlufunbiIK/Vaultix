@@ -5,14 +5,19 @@ import {
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { ApiKeysService } from '../api-key.service';
+
+interface RequestWithApiKey extends Request {
+  apiKey?: unknown;
+}
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
   constructor(private apiKeyService: ApiKeysService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<RequestWithApiKey>();
 
     const rawKey = req.header('X-API-Key');
     if (!rawKey) {
@@ -29,7 +34,7 @@ export class ApiKeyGuard implements CanActivate {
       throw new ForbiddenException('API key revoked');
     }
 
-    req.apiKey = key; // attach integrator identity
+    req.apiKey = key;
     return true;
   }
 }

@@ -1,12 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { NotificationChannel, NotificationEventType, NotificationStatus } from "./enums/notification-event.enum";
-import { NotificationSender } from "./interface/notification-sender.interface";
-import { Notification } from "./entities/notification.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { WebhookSender } from "./senders/webhook.sender";
-import { Repository } from "typeorm";
-import { EmailSender } from "./senders/email.sender";
-import { PreferenceService } from "./preference.service";
+import { Injectable } from '@nestjs/common';
+import {
+  NotificationChannel,
+  NotificationEventType,
+  NotificationStatus,
+} from './enums/notification-event.enum';
+import { NotificationSender } from './interface/notification-sender.interface';
+import { Notification } from './entities/notification.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { WebhookSender } from './senders/webhook.sender';
+import { Repository } from 'typeorm';
+import { EmailSender } from './senders/email.sender';
+import { PreferenceService } from './preference.service';
 
 @Injectable()
 export class NotificationService {
@@ -25,11 +29,10 @@ export class NotificationService {
     ]);
   }
 
-  // 🔥 Called by escrow domain service
   async handleEscrowEvent(
     userId: string,
     eventType: NotificationEventType,
-    payload: any,
+    payload: Record<string, unknown>,
   ) {
     const prefs = await this.preferenceService.getUserPreferences(userId);
 
@@ -71,7 +74,7 @@ export class NotificationService {
         }
 
         notification.status = NotificationStatus.SENT;
-      } catch (err) {
+      } catch {
         notification.retryCount += 1;
         notification.status =
           notification.retryCount > 3
